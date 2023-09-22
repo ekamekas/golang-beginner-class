@@ -23,3 +23,13 @@ print n-times with rules:
 """
 
 Source Code: `./mini-challenges/fizz-buzz.go`
+
+#### Count Character
+
+Problems:
+
+"""
+Print each characters in word and count
+"""
+
+Source Code: `./mini-challenges/count-word.go`
