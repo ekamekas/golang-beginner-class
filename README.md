@@ -30,3 +30,16 @@ Problems:
 > print each characters in word and count
 
 Source Code: `./mini-challenges/count-word.go`
+
+#### HRS
+
+Problems:
+
+> by using cli, do a particular process based on command.
+> 
+> example: search and print data by name, search and print data by id
+
+
+Source Code: `./mini-challenges/hrs/main.go`
+
+*note: use `go run . help` for additional information
