@@ -51,3 +51,4 @@ Problems:
 > by using interfaces, create a function that print data using go routine
 
 Source Code: `./mini-challenges/disorder.go`
+Source Code: `./mini-challenges/assorted.go`
