@@ -43,3 +43,12 @@ Problems:
 Source Code: `./mini-challenges/hrs/main.go`
 
 *note: use `go run . help` for additional information
+
+#### goroutine
+
+Problems:
+
+> by using interfaces, create a function that print data using go routine
+
+Source Code: `./mini-challenges/disorder.go`
+Source Code: `./mini-challenges/assorted.go`
