@@ -60,3 +60,17 @@ Problems:
 > build a simple login and profile page using golang native http package
 
 Source Code: `./mini-challenges/webserver-http/main.go`
+
+#### webserver-db
+
+Problems:
+
+> build a simple database integration with native sql package
+
+Prerequisite:
+
+> golang package https://github.com/glebarez/go-sqlite
+
+> gcc compiler
+
+Source Code: `./mini-challenges/webserver-db/main.go`
