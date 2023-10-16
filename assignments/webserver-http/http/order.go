@@ -21,6 +21,26 @@ func NewOrderRoute(repository domain.OrderRepository) {
 		}
 
 		switch r.Method {
+		case "PUT":
+			var requestBody domain.Order
+			err := json.NewDecoder(r.Body).Decode(&requestBody)
+			if nil != err {
+				log.Println("[ORDER] failed to process request", err)
+				handleGeneric(w, r)
+
+				break
+			}
+
+			responseBody := controller.Update(uint(id), &requestBody)
+
+			w.Header().Set("Content-Type", "application/json")
+			err = json.NewEncoder(w).Encode(responseBody)
+			if nil != err {
+				log.Println("[ORDER] failed to process request, err")
+				handleGeneric(w, r)
+			}
+
+			break
 		case "DELETE":
 			responseBody := controller.Delete(uint(id))
 

@@ -28,6 +28,14 @@ type OrderRepository interface {
 	Get() ([]Order, error)
 
 	/**
+	 * update if exist order data. will return error if the data if not exist.
+	 * all the data referenced to this order will be deleted and re-inserted
+	 *
+	 * @return  updated order id or error
+	 */
+	Update(id uint, m *Order) (uint, error)
+
+	/**
 	 * delete if exist order data. will not error if the data if not exist.
 	 * all the data referenced to this order will be deleted
 	 *
@@ -64,6 +72,33 @@ func (controller *orderController) Create(r *Order) Result {
 	// end of validate
 
 	orderId, err := controller.repository.Create(r)
+	if nil != err {
+		return Result{Error: err.Error(), Code: "500"}
+	}
+
+	return Result{Error: "", Code: "200", Data: orderId}
+}
+
+func (controller *orderController) Update(id uint, r *Order) Result {
+	// validate
+	if nil == r {
+		return Result{Error: "request body must not be nil", Code: "400"}
+	}
+
+	if "" == r.CustomerName {
+		return Result{Error: "customer name must not be nil", Code: "400"}
+	}
+
+	if nil == r.Items || 1 > len(*r.Items) {
+		return Result{Error: "order must have at least 1 item", Code: "400"}
+	}
+
+	if nil == r.OrderedAt {
+		return Result{Error: "order data must not be nil", Code: "400"}
+	}
+	// end of validate
+
+	orderId, err := controller.repository.Update(id, r)
 	if nil != err {
 		return Result{Error: err.Error(), Code: "500"}
 	}

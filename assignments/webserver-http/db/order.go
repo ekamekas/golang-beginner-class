@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 
 	"webserver-http/domain"
@@ -101,6 +102,69 @@ func (r *orderRepository) Get() ([]domain.Order, error) {
 	}
 
 	return result, nil
+}
+
+func (r *orderRepository) Update(id uint, m *domain.Order) (uint, error) {
+	tx, err := r.database.Begin()
+	if nil != err {
+		log.Println("[ORDER] failed to update order", err)
+
+		return 0, err
+	}
+
+	defer tx.Rollback() // will be ignored if transaction is committed
+
+	row, err := tx.Exec(`
+		UPDATE "order" SET CUSTOMER_NAME = ?, ORDERED_AT = ? WHERE ID = ? 
+    `, m.CustomerName, m.OrderedAt, id)
+	if nil != err {
+		log.Println("[ORDER] failed to update order", err)
+
+		return 0, err
+	}
+
+	updatedRows, err := row.RowsAffected()
+	if nil != err {
+		log.Println("[ORDER] failed to update order", err)
+
+		return 0, err
+	}
+	if 0 == updatedRows {
+		err = errors.New("resource is not found")
+		log.Println("[ORDER] failed to update order", err)
+
+		return 0, err
+	}
+
+	_, err = tx.Exec(`
+		DELETE FROM item WHERE ORDER_ID = ?
+    `, id)
+	if nil != err {
+		log.Println("[ORDER] failed to create order", err)
+
+		return 0, err
+	}
+
+	if nil == m.Items {
+		tx.Commit()
+
+		return id, nil
+	}
+
+	for _, item := range *m.Items {
+		_, err := tx.Exec(`
+            INSERT INTO item (NAME, DESCRIPTION, QUANTITY, ORDER_ID) VALUES (?, ?, ?, ?) 
+        `, item.Name, item.Description, item.Quantity, id)
+		if nil != err {
+			log.Println("[ORDER] failed to create item", err)
+
+			return 0, err
+		}
+	}
+
+	tx.Commit()
+
+	return id, nil
 }
 
 func (r *orderRepository) Delete(id uint) (uint, error) {
