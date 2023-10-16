@@ -102,3 +102,16 @@ func (r *orderRepository) Get() ([]domain.Order, error) {
 
 	return result, nil
 }
+
+func (r *orderRepository) Delete(id uint) (uint, error) {
+	_, err := r.database.Exec(`
+		DELETE FROM "order" WHERE id = ?
+	`, id)
+	if nil != err {
+		log.Println("[ORDER] failed to delete order with id", id)
+
+		return id, err
+	}
+
+	return id, nil
+}

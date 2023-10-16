@@ -26,6 +26,14 @@ type OrderRepository interface {
 	 * @return  an array or orders or error
 	 */
 	Get() ([]Order, error)
+
+	/**
+	 * delete if exist order data. will not error if the data if not exist.
+	 * all the data referenced to this order will be deleted
+	 *
+	 * @return  deleted order id or error
+	 */
+	Delete(id uint) (uint, error)
 }
 
 type orderController struct {
@@ -70,4 +78,13 @@ func (controller *orderController) Get() Result {
 	}
 
 	return Result{Error: "", Code: "200", Data: order}
+}
+
+func (controller *orderController) Delete(id uint) Result {
+	orderId, err := controller.repository.Delete(id)
+	if nil != err {
+		return Result{Error: err.Error(), Code: "500"}
+	}
+
+	return Result{Error: "", Code: "200", Data: orderId}
 }
